@@ -1,6 +1,10 @@
 # Defines the app's routes
 # @author Chris Loftus
 Rails.application.routes.draw do
+  resources :user_post_times
+  resources :posts do
+    resources :replies, except: [:index, :show, :edit, :update]
+  end
   resources :users do
     # We add a special route to support the search field
     get 'search', on: :collection

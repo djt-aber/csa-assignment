@@ -67,6 +67,10 @@ SimpleNavigation::Configuration.run do |navigation|
     # call then we can leave off the braces (it is not ambiguous)
     primary.item :home, 'Home', '/home', highlights_on: /(^\/$)|(^\/home$)/
     primary.item :jobs, 'Jobs', '/jobs'
+    primary.item :posts, 'Forum', posts_path,
+                 highlights_on: /\/posts/,
+                 if: Proc.new {current_user}
+
     # The following tab should only be displayed if a user is logged in.
     # The current_user method is defined in application_controller.rb
     # in the controllers folder. If a user is logged in it will return a UserDetail object,

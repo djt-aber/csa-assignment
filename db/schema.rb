@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170825081708) do
+ActiveRecord::Schema.define(version: 20171128150807) do
 
   create_table "broadcasts", force: :cascade do |t|
     t.text "content"
@@ -42,12 +42,46 @@ ActiveRecord::Schema.define(version: 20170825081708) do
     t.index ["user_id"], name: "index_images_on_user_id"
   end
 
+  create_table "posts", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "body", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "anonymous", default: false
+    t.index ["user_id"], name: "index_posts_on_user_id"
+  end
+
+  create_table "replies", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "body", null: false
+    t.integer "user_id", null: false
+    t.integer "reply_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "post_id"
+    t.boolean "anonymous", default: false
+    t.index ["post_id"], name: "index_replies_on_post_id"
+    t.index ["reply_id"], name: "index_replies_on_reply_id"
+    t.index ["user_id"], name: "index_replies_on_user_id"
+  end
+
   create_table "user_details", force: :cascade do |t|
     t.string "login"
     t.string "salt"
     t.string "crypted_password"
     t.integer "user_id"
     t.index ["user_id"], name: "index_user_details_on_user_id"
+  end
+
+  create_table "user_post_times", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "post_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_user_post_times_on_post_id"
+    t.index ["user_id", "post_id"], name: "index_user_post_times_on_user_id_and_post_id", unique: true
+    t.index ["user_id"], name: "index_user_post_times_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

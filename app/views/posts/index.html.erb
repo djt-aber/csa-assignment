@@ -1,0 +1,65 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Posts</h1>
+<% if @posts.length > 0 %>
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Thread</th>
+      <th>Author</th>
+      <th>Unread Posts</th>
+      <th>Total Posts</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+      <% @posts.each do |post| %>
+      <% if post.anonymous %>
+	      <% @name = "Anonymous" %>
+      <% else %>
+        <% @name = post.user.firstname + " " + post.user.surname %>
+      <% end %>
+      <tr>
+        <td><%= post.created_at.strftime("%m/%d/%y %H:%M") %></td>
+	<td><%= link_to post.title, post %></td>
+	<% if !post.anonymous %>
+	  <td><%= link_to @name, post.user %></td>
+        <% else %>
+	  <td><%= @name %></td>
+        <% end %>
+        <td><%= checkPosts(post, current_user.id) %></td>
+	<td><%= post.replies.count+1 %></td>
+	<% if post.user != nil %>
+	  <% if post.user.id == current_user.id %>
+	    <td><%= link_to(image_tag('edit.png', alt: 'Edit',
+		                       title: 'Edit item', border: '0'),
+				edit_post_path(post)) %></td>
+	    <td><%= link_to image_tag('destroy.gif', alt: 'Destroy', title: 'Destroy', border: '0'), post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <% else %>
+	    <% if current_user.login == "admin" %>
+	    <td><%= link_to image_tag('destroy.gif', alt: 'Destroy', title: 'Destroy', border: '0'), post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+	<% end %>
+
+          <% end %>
+      <% else %>
+        <% if current_user.login == "admin" %>
+	    <td><%= link_to image_tag('destroy.gif', alt: 'Destroy', title: 'Destroy', border: '0'), post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+	<% end %>
+      <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
+<br>
+<div class="digg_pagination">
+  <div>
+    <%= page_entries_info @posts %>
+  </div>
+   <%= will_paginate @posts, container: false %>
+</div>
+<br>
+
+<%= link_to 'Create Thread', new_post_path %>
