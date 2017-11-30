@@ -17,20 +17,20 @@
   <tbody>
       <% @posts.each do |post| %>
       <% if post.anonymous %>
-	      <% @name = "Anonymous" %>
+	      <% @name = "anonymous" %>
       <% else %>
         <% @name = post.user.firstname + " " + post.user.surname %>
       <% end %>
-      <tr>
+      <tr class="data">
         <td><%= post.created_at.strftime("%m/%d/%y %H:%M") %></td>
-	<td><%= link_to post.title, post %></td>
+	<td class="title"><%= link_to post.title, post %></td>
 	<% if !post.anonymous %>
-	  <td><%= link_to @name, post.user %></td>
+	  <td class="author"><%= link_to @name, post.user %></td>
         <% else %>
-	  <td><%= @name %></td>
+	  <td class="author"><%= @name %></td>
         <% end %>
-        <td><%= checkPosts(post, current_user.id) %></td>
-	<td><%= post.replies.count+1 %></td>
+        <td class="unread"><%= checkPosts(post, current_user.id) %></td>
+	<td class="total"><%= post.replies.count+1 %></td>
 	<% if post.user != nil %>
 	  <% if post.user.id == current_user.id %>
 	    <td><%= link_to(image_tag('edit.png', alt: 'Edit',

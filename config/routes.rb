@@ -1,9 +1,8 @@
 # Defines the app's routes
 # @author Chris Loftus
 Rails.application.routes.draw do
-  resources :user_post_times
   resources :posts do
-    resources :replies, except: [:index, :show, :edit, :update]
+    resources :replies, except: [:index, :show, :edit, :update, :destroy]
   end
   resources :users do
     # We add a special route to support the search field
@@ -17,6 +16,8 @@ Rails.application.routes.draw do
     resources :users, except: [:new, :edit] do
       get 'search', on: :collection
     end
+    resources :posts, except: [:new, :edit, :update]
+
   end
 
   # No point allowing the editing or update of an existing broadcast
