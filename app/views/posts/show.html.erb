@@ -1,7 +1,22 @@
 <p id="notice"><%= notice %></p>
 <br>
 <h3>Post</h3>
-
+  <div style="background-color: silver; width:800px;">
+	  <h3>RE: <%= @post.title %></h3>
+  </div>
+  <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; max-width: 20%;">
+    <% if @post.anonymous %>
+	    <p>Anonymous</p>
+    <% else %>
+	    <p><%= @post.user.firstname + " " + @post.user.surname %></p>
+    <%= image_for(@post.user, :medium) %>
+	  <p>Date Joined: <%= @post.user.created_at.strftime("%m/%d/%y") %></p>
+    <% end %>
+  </div>
+  <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; width: 50%; vertical-align: top;">
+	  <p><%= @post.created_at.strftime("%m/%d/%y %H:%M") %></p>
+	  <p><%= @post.body %></p>
+  </div>
   <hr> 
   <% readPost(@post, current_user.id) %>
   <div class="user">
@@ -11,6 +26,7 @@
     <% else %>
 	    <p><%= @post.user.email %></p>
     <%= image_for(@post.user, :medium) %>
+	  <p>Date Joined: <%= @post.user.created_at.strftime("%m/%d/%y") %></p>
     <% end %>
 
   </div>
