@@ -10,6 +10,8 @@
       <th>Author</th>
       <th>Unread Posts</th>
       <th>Total Posts</th>
+      <th>Total Views</th>
+      <th>Last Post</th>
       <th colspan="2"></th>
     </tr>
   </thead>
@@ -31,6 +33,25 @@
         <% end %>
         <td class="unread"><%= checkPosts(post, current_user.id) %></td>
 	<td class="total"><%= post.replies.count+1 %></td>
+        <td><%= post.views %></td>
+        <% lastPost = post.replies.last %>
+	<td>
+		<% if(lastPost != nil) %>
+			<% if !lastPost.anonymous %>
+				<p>By: <%= lastPost.user.firstname + " " + lastPost.user.surname %></p>
+			<% else %>
+				<p>anonymous</p>
+		        <% end %>
+                        <strong><%= lastPost.created_at.strftime("%m/%d/%y %H:%M") %></strong>
+		<% else %>
+			<% if !post.anonymous %>
+				<p>By: <%= post.user.firstname + " " + post.user.surname %></p>
+                        <% else %>
+				<p>anonymous</p>
+		        <% end %>
+                        <strong><%= post.created_at.strftime("%m/%d/%y %H:%M") %></strong>
+		<% end %>
+	</td>
 	<% if post.user != nil %>
 	  <% if post.user.id == current_user.id %>
 	    <td><%= link_to(image_tag('edit.png', alt: 'Edit',

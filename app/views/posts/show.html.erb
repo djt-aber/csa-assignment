@@ -11,81 +11,74 @@
 	    <p><%= @post.user.firstname + " " + @post.user.surname %></p>
     <%= image_for(@post.user, :medium) %>
 	  <p>Date Joined: <%= @post.user.created_at.strftime("%m/%d/%y") %></p>
+	  <p>Posts: <%= @post.user.created_at.strftime("%m/%d/%y") %></p>
     <% end %>
   </div>
   <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; width: 50%; vertical-align: top;">
 	  <p><%= @post.created_at.strftime("%m/%d/%y %H:%M") %></p>
-	  <p><%= @post.body %></p>
-  </div>
-  <hr> 
-  <% readPost(@post, current_user.id) %>
-  <div class="user">
-    <p><%= @post.created_at.strftime("%m/%d/%y %H:%M") %></p>
-    <% if @post.anonymous %>
-	    <p>Anonymous</p>
-    <% else %>
-	    <p><%= @post.user.email %></p>
-    <%= image_for(@post.user, :medium) %>
-	  <p>Date Joined: <%= @post.user.created_at.strftime("%m/%d/%y") %></p>
-    <% end %>
-
-  </div>
-  <div class="body">
-    <h4>Title: <%= @post.title %></h4>
-    <p>Body: <%= @post.body %></p>
-  </div>
-
-<%= link_to 'Reply', new_post_reply_path(@post.id) %> |
+	  <p><%=raw @post.body %></p>
+	  <p><%= link_to 'Reply To Thread', new_post_reply_path(@post.id) %> |
 <% if @post.user != nil %>
   <% if current_user.id == @post.user.id %>
     <%= link_to 'Edit', edit_post_path(@post) %> |
   <% end %>
 <% end %>
-<%= link_to 'Back', posts_path %>
+<%= link_to 'Back', posts_path %></p>
+
+  </div>
+  <% readPost(@post, current_user.id) %>
+
 <br>
 <br>
 <h3>Replies</h3>
-
-  <hr> 
-  <% @post.replies.each do |reply| %>
-  <div class="user">
-    <p><%= reply.created_at.strftime("%m/%d/%y %H:%M") %></p>
+<% @post.replies.each do |reply| %>
+	<% if(reply.reply_id.nil?) %>
+<div style="background-color: silver; width:800px;">
+	  <h3>RE: <%= reply.title %></h3>
+  </div>
+  <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; max-width: 20%;">
     <% if reply.anonymous %>
 	    <p>Anonymous</p>
     <% else %>
-	    <p><%= reply.user.email %></p>
+	    <p><%= reply.user.firstname + " " + reply.user.surname %></p>
     <%= image_for(reply.user, :medium) %>
+	  <p>Date Joined: <%= reply.user.created_at.strftime("%m/%d/%y") %></p>
+	  <p>Posts: <%= reply.user.created_at.strftime("%m/%d/%y") %></p>
     <% end %>
+  </div>
+  <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; width: 50%; vertical-align: top;">
+	  <p><%= reply.created_at.strftime("%m/%d/%y %H:%M") %></p>
+	  <p><%=raw reply.body %></p>
+	  <p><%= link_to 'Reply To Reply', new_post_reply_path(reply.post_id, reply: reply.id) %></p>
+  </div>
 
-  </div>
-  <div class="body">
-    <h4>Title: <%= reply.title %></h4>
-    <p>Body: <%= reply.body %></p>
-  </div>
-<%= link_to 'New Reply', new_post_reply_path(reply.post_id, reply: reply.id) %>
   <div class="replies">
     <% subReplies = getReplies(reply) %>
     <% clearVars %>
     <% subReplies.each do |subReply| %>
       <% subPost = subReply[0] %>
       <% indent = subReply[1] %>
-      <div style="background-color: light-gray important!; margin-left: <%= " #{indent * 50}px" %>">
-      <div class="user">
-    <p><%= subPost.created_at.strftime("%m/%d/%y %H:%M") %></p>
+<div style="background-color: silver; width:800px; margin-left: <%= " #{indent * 50}px" %>">
+	  <h3>RE: <%= subPost.title %></h3>
+  </div>
+  <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; max-width: 20%; margin-left: <%= " #{indent * 50}px" %>">
     <% if subPost.anonymous %>
 	    <p>Anonymous</p>
     <% else %>
-	    <p><%= subPost.user.email %></p>
-            <%= image_for(subPost.user, :medium) %>
+	    <p><%= subPost.user.firstname + " " + subPost.user.surname %></p>
+    <%= image_for(subPost.user, :medium) %>
+	  <p>Date Joined: <%= subPost.user.created_at.strftime("%m/%d/%y") %></p>
+	  <p>Posts: <%= subPost.user.created_at.strftime("%m/%d/%y") %></p>
     <% end %>
   </div>
-  <div class="body">
-    <h4>Title: <%= subPost.title %></h4>
-    <p>Body: <%= subPost.body %></p>
+  <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; width: 50%; vertical-align: top;">
+	  <p><%= subPost.created_at.strftime("%m/%d/%y %H:%M") %></p>
+	  <p><%=raw subPost.body %></p>
+	  <p><%= link_to 'Reply To Reply', new_post_reply_path(subPost.post_id, reply: subPost.id) %></p>
+
   </div>
-<%= link_to 'New Reply', new_post_reply_path(subPost.post_id, reply: subPost.id) %>
-	</div>
+
     <% end %>
   </div> 
-<hr> 
+  <% end %>
 <% end %>

@@ -35,4 +35,12 @@
   <div class="actions">
     <%= form.submit %>
   </div>
+  <script>
+      ClassicEditor
+          .create( document.querySelector( '#post_body' ) )
+          .catch( error => {
+              console.error( error );
+          } );
+  </script>
 <% end %>
+

@@ -32,6 +32,8 @@ module PostsHelper
   end
 
   def readPost(post, currentUser)
+    post.views += 1
+    post.save
     userPost = UserPostTime.find_or_initialize_by(user_id: currentUser, post_id: post.id)
     userPost.created_at = DateTime.now
     userPost.save!
