@@ -30,7 +30,8 @@ class PostsController < ApplicationController
   def create
     @post = Post.new(post_params)
     respond_to do |format|
-      if @post.save
+      #checks for recaptcha
+      if verify_recaptcha(model: @post) && @post.save
 	@userPost = UserPostTime.new
 	@userPost.post_id = @post.id
 	@userPost.user_id = @post.user_id
@@ -48,7 +49,7 @@ class PostsController < ApplicationController
   # PATCH/PUT /posts/1.json
   def update
     respond_to do |format|
-      if @post.update(post_params)
+      if verify_recaptcha(model: @post) && @post.update(post_params)
         format.html { redirect_to @post, notice: 'Post was successfully updated.' }
         format.json { render :show, status: :ok, location: @post }
       else

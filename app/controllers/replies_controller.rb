@@ -12,7 +12,8 @@ class RepliesController < ApplicationController
     @reply = Reply.new(reply_params)
 
     respond_to do |format|
-      if @reply.save
+      #checks for recaptcha
+      if verify_recaptcha(model: @reply) && @reply.save
         format.html { redirect_to post_path(reply_params[:post_id]), notice: 'Reply was successfully created.' }
         format.json { render :show, status: :created, location: @reply }
       else

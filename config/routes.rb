@@ -16,7 +16,8 @@ Rails.application.routes.draw do
     resources :users, except: [:new, :edit] do
       get 'search', on: :collection
     end
-    resources :posts, except: [:new, :edit, :update]
+    resources :posts, except: [:new, :edit]
+    resource :session, only: [:create]
 
   end
 

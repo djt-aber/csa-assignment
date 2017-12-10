@@ -8,10 +8,10 @@
     <% if @post.anonymous %>
 	    <p>Anonymous</p>
     <% else %>
-	    <p><%= @post.user.firstname + " " + @post.user.surname %></p>
+	    <p><%= link_to @post.user.firstname + " " + @post.user.surname, @post.user %></p>
     <%= image_for(@post.user, :medium) %>
 	  <p>Date Joined: <%= @post.user.created_at.strftime("%m/%d/%y") %></p>
-	  <p>Posts: <%= @post.user.created_at.strftime("%m/%d/%y") %></p>
+	  <p>Threads Created: <%= @post.user.posts.count %></p>
     <% end %>
   </div>
   <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; width: 50%; vertical-align: top;">
@@ -40,10 +40,10 @@
     <% if reply.anonymous %>
 	    <p>Anonymous</p>
     <% else %>
-	    <p><%= reply.user.firstname + " " + reply.user.surname %></p>
+	    <p><%= link_to reply.user.firstname + " " + reply.user.surname , reply.user%></p>
     <%= image_for(reply.user, :medium) %>
 	  <p>Date Joined: <%= reply.user.created_at.strftime("%m/%d/%y") %></p>
-	  <p>Posts: <%= reply.user.created_at.strftime("%m/%d/%y") %></p>
+	  <p>Threads Created: <%= reply.user.posts.count %></p>
     <% end %>
   </div>
   <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; width: 50%; vertical-align: top;">
@@ -65,10 +65,10 @@
     <% if subPost.anonymous %>
 	    <p>Anonymous</p>
     <% else %>
-	    <p><%= subPost.user.firstname + " " + subPost.user.surname %></p>
+	    <p><%= link_to subPost.user.firstname + " " + subPost.user.surname, subPost.user %></p>
     <%= image_for(subPost.user, :medium) %>
 	  <p>Date Joined: <%= subPost.user.created_at.strftime("%m/%d/%y") %></p>
-	  <p>Posts: <%= subPost.user.created_at.strftime("%m/%d/%y") %></p>
+	  <p>Threads Created: <%= subPost.user.posts.count %></p>
     <% end %>
   </div>
   <div style="display: inline-block; padding:5px; margin:5px; border:1px silver solid; width: 50%; vertical-align: top;">

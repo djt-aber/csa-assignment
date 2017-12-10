@@ -2,7 +2,7 @@
 # @author Chris Loftus
 class API::PostsController < API::ApplicationController
   skip_before_action :verify_authenticity_token
-	before_action :set_post, only: [:show, :destroy]
+	before_action :set_post, only: [:show, :destroy, :update]
 
   # GET /api/users.json
   def index
@@ -30,22 +30,13 @@ class API::PostsController < API::ApplicationController
     respond_to do |format|
       format.json do
         @post = Post.new(post_params)
+	@post.user_id = current_user.id #so the client doesn't need to ask for a user ID
 
         if @post.save # Will attempt to save user and image
           head :created, location: api_post_url(@post)
         else
           render json: @post.errors, status: :unprocessable_entity
         end
-      end
-    end
-  end
-
-  # DELETE /api/users/1.json
-  def destroy
-    respond_to do |format|
-      format.json do
-        @post.destroy
-        head :no_content
       end
     end
   end

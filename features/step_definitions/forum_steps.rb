@@ -1,10 +1,9 @@
 Given(/^that user "([^"]*)" with password "([^"]*)" has logged in$/) do |arg1, arg2|
-	  #pending # Write code here that turns the phrase above into concrete actions
 	  visit '/session/new'
 	  fill_in 'login', :with => arg1 
 	  fill_in 'password', :with => arg2
 	  click_button " Login "
-          page.assert_text("Logged in successfully") # if not using RSpec
+          page.assert_text("Logged in successfully")
 end
 
 When(/^the user creates a new anonymous thread with the title "([^"]*)" with the body "([^"]*)"$/) do |arg1, arg2|

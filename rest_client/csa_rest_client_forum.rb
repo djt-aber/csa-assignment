@@ -10,36 +10,55 @@ class CSARestClient
   @@DOMAIN = 'http://localhost:3000'
 
   def check_login
+    #asks the user for their credentials
     print "Login: "
-    login = STDIN.gets.chomp
+    @login = STDIN.gets.chomp
     print "Password: "
-    password = STDIN.noecho(&:gets).chomp
+    @password = STDIN.noecho(&:gets).chomp
 
+    #if either of the inputs are empty if starts the process again
+    if(@login.empty? || @password.empty?)
+      puts "username or password cannot be blank"
+      return false
+    else
+	#makes a post request to the session api controller with the provided credentials
+        response = RestClient.post "#{@@DOMAIN}/api/session.json",
+                                 {
+                                   login: @login,
+                                   password: @password,
+                                }
+	if(response.body == "true")
+	  return true
+	else
+	  return false
+	end
+    end
   end
 
   def run_menu
+    #calls the check login function in a loop, until a correct login has been entered
     loop do
       if(check_login)
         break
+      else
+        puts "username or password incorrect"	      
       end
     end
 
+    #loops through displaying the menu and checking the input from the user
     loop do
       display_menu
       option = STDIN.gets.chomp.upcase
       case option
         when '1'
           puts 'List Existing Threads:'
-          display_users
+          display_posts
         when '2'
           puts 'List Single Thread:'
-          display_user
+          display_post
         when '3'
           puts 'Create New Thread:'
-          create_user
-        when '4'
-          puts 'Delete Thread:'
-          delete_user
+          create_post
         when 'Q'
           break
         else
@@ -50,16 +69,17 @@ class CSARestClient
 
   private
 
+  #function which outputs the menu to the console
   def display_menu
-    puts 'Enter option: '
+    puts "\nEnter option: "
     puts '1. List Existing Threads'
     puts '2. List Single Thread'
     puts '3. Create new Thread'
-    puts '4. Delete Thread'
     puts 'Q. Quit'
   end
 
-  def display_users
+  #displays all the posts
+  def display_posts
     begin
       response = RestClient.get "#{@@DOMAIN}/api/posts.json?all", authorization_hash
 
@@ -79,8 +99,10 @@ class CSARestClient
     end
   end
 
-  def display_user
+  #displays a single post
+  def display_post
     begin
+      # asks the user for the post id
       print "Enter the post ID: "
       id = STDIN.gets.chomp
       response = RestClient.get "#{@@DOMAIN}/api/posts/#{id}.json", authorization_hash
@@ -94,16 +116,16 @@ class CSARestClient
     end
   end
 
-  def create_user
+  #creates a new post
+  def create_post
     begin
+      #asks the user for the title, body, and whether it should be anonymous
       print "Title: "
       title = STDIN.gets.chomp
       print "Body: "
       body = STDIN.gets.chomp
       print "Post as Anonymous? (y/n): "
       anonymous = STDIN.gets.chomp.upcase == 'Y' ? true : false
-      print "User ID: "
-      user_id = STDIN.gets.chomp
       # check user information from login
 
       # Rails will reject this unless you configure the cross_forgery_request check to
@@ -120,8 +142,7 @@ class CSARestClient
                                      post: {
                                          title: title,
                                          body: body,
-                                         anonymous: anonymous,
-                                         user_id: user_id,
+                                         anonymous: anonymous
                                      },
                                  }, authorization_hash
 
@@ -134,22 +155,9 @@ class CSARestClient
     end
   end
 
-  def delete_user
-    begin
-      print "Enter the post ID: "
-      id = STDIN.gets.chomp
-      response = RestClient.delete "#{@@DOMAIN}/api/posts/#{id}.json", authorization_hash
-
-      if (response.code == 204)
-        puts "Deleted successfully"
-      end
-    rescue => e
-      puts STDERR, "Error accessing REST service. Error: #{e}\n"
-    end
-  end
-
+  #this is the authorisation hash which is passed along with most requests
   def authorization_hash
-    {Authorization: "Basic #{Base64.strict_encode64('admin:taliesin')}"}
+    {Authorization: "Basic #{Base64.strict_encode64("#{@login}:#{@password}")}"}
   end
 
 

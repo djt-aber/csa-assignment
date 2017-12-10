@@ -1,2 +1,0 @@
-class UserPostTimesController < ApplicationController
-end
